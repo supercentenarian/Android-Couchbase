@@ -20,6 +20,13 @@ import android.util.Log;
 import com.couchbase.android.Intents.CouchbaseError;
 import com.couchbase.android.Intents.CouchbaseStarted;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.R;
+import android.content.Context;
+import android.app.PendingIntent;
+// import android.app.Notification.Builder;  api 11 and above
+
 /**
  * Implementation of the Couchbase service
  *
@@ -232,6 +239,34 @@ public class CouchbaseService extends Service {
 			}
 		};
 		couchbaseRunThread.start();
+
+
+      //api 11 and above
+      // Notification notification = new Notification.Builder(this)
+      //     .setAutoCancel(true)
+      //     .setContentText("couchdbstarted");
+      // startForeground(1123123,notification);
+
+// int icon = R.drawable.notification_icon;
+
+      String ns = Context.NOTIFICATION_SERVICE;
+      NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+
+
+
+      int icon = R.drawable.arrow_down_float;
+      long when = System.currentTimeMillis();
+      Notification notification = new Notification(icon, "couchdbstarted", when);
+
+      Context context = getApplicationContext();
+      CharSequence contentTitle = "couchapp started";
+      CharSequence contentText = "Your Android couchapp has started..";
+      Intent notificationIntent = new Intent(this, CouchbaseService.class);
+      PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+      notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+
+      mNotificationManager.notify(1, notification);
 	}
 
 }
